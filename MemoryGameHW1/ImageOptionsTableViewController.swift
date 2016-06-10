@@ -1,23 +1,20 @@
 //
-//  HighestScoreTableViewController.swift
+//  ImageOptionsTableViewController.swift
 //  MemoryGameHW1
 //
-//  Created by Seiran on 25.05.16.
+//  Created by Admin on 10/06/2016.
 //  Copyright © 2016 SVTeam. All rights reserved.
 //
 
 import UIKit
 
-class HighestScoreTableViewController: UITableViewController{
+class ImageOptionsTableViewController: UITableViewController {
+    
+    var retreivedImages = ImageData.loadImagesFromUserDefaults()
 
-    var retreivedPlayers = GamePlayer.loadPlayersFromUserDefaults()
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        retreivedPlayers =  retreivedPlayers!.sort({$0.score > $1.score})
-
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 
@@ -33,32 +30,29 @@ class HighestScoreTableViewController: UITableViewController{
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        
-        return 1
+               return 1
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if(retreivedPlayers?.count <= 10){
-            return (retreivedPlayers?.count)!}
-        else {
-            return 10
-        }
+        
+        return 8
     }
 
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cellIdentifier = "HighestScoreTableViewCell"
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! HighestScoreTableViewCell
+        let cellIdentifier = "ImageOptionsTableViewCell"
+        let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! ImageOptionsTableViewCell
+
+        // Configure the cell...
         
-      
-        cell.nameLable.text = retreivedPlayers![indexPath.row].name
-        cell.scoreLable.text = String(retreivedPlayers![indexPath.row].score)
-        cell.playerImage.image =  UIImage(named: "default-user.png")!
+        
+       // cell.imageV.image =  UIImage(named: "default-user")!
+        let im = UIImage(named: retreivedImages![indexPath.row].name)!
+        
+        cell.imageV1.image = im
         return cell
-        
-        
     }
-    
+
 
     /*
     // Override to support conditional editing of the table view.

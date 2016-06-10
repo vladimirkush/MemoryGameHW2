@@ -1,8 +1,8 @@
 //
 //  MainMenuController.swift
-//  MemoryGameHW1
+//  MemoryGameHW2
 //
-//  Created by Admin on 21.05.16.
+//  Created by Seiran on 21.05.16.
 //  Copyright © 2016 SVTeam. All rights reserved.
 //
 
@@ -50,6 +50,19 @@ class MainMenuController: UIViewController {
             
             nameLable.text=preferences.stringForKey(currentUserKey)
         }
+        
+        let im0 = ImageData(name: "cell0")
+        let im1 = ImageData(name: "cell1")
+        let im2 = ImageData(name: "cell2")
+        let im3 = ImageData(name: "cell3")
+        let im4 = ImageData(name: "cell4")
+        let im5 = ImageData(name: "cell5")
+        let im6 = ImageData(name: "cell6")
+        let im7 = ImageData(name: "cell7")
+        let im8 = ImageData(name: "cell8")
+        
+        let imArray = [im0,im1,im2,im3,im4,im5,im6,im7,im8]
+        ImageData.saveImagesToUserDefaults(imArray)
     }
     
     override func didReceiveMemoryWarning() {

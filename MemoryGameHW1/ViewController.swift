@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  MemoryGameHW1
 //
-//  Created by Seiran (317101541) and Vladimir (327149621) on 25/03/2016.
+//  Created by Seiran  and Vladimir  on 25/03/2016.
 //  Copyright © 2016 Seiran and Vladimir. All rights reserved.
 //
 
@@ -29,7 +29,7 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     let preferences = NSUserDefaults.standardUserDefaults()
     
     let currentUserKey = "currentUser"
-    
+    var retreivedImages = ImageData.loadImagesFromUserDefaults()
     
     
     
@@ -121,23 +121,23 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
     
    
     func ImageForLetter (letter: String)->UIImage{
-        var filename = imageNamePrefix
+        var string = ""
         
         switch letter{
-        case "A":   filename += "0"
-        case "B":   filename += "1"
-        case "C":   filename += "2"
-        case "D":   filename += "3"
-        case "E":   filename += "4"
-        case "F":   filename += "5"
-        case "G":   filename += "6"
-        case "H":   filename += "7"
+        case "A":   string = retreivedImages![0].name
+        case "B":   string = retreivedImages![1].name
+        case "C":   string = retreivedImages![2].name
+        case "D":   string = retreivedImages![3].name
+        case "E":   string = retreivedImages![4].name
+        case "F":   string = retreivedImages![5].name
+        case "G":   string = retreivedImages![6].name
+        case "H":   string = retreivedImages![7].name
             
         default: print ("illegal parameter")
             
         }
-        print("filename \(filename)")
-        let image = UIImage(named: filename)
+        print("filename \(string)")
+        let image = UIImage(named: string)
         return image!
     }
 
