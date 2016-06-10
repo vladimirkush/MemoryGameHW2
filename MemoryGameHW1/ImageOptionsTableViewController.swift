@@ -8,9 +8,13 @@
 
 import UIKit
 
-class ImageOptionsTableViewController: UITableViewController {
+
+class ImageOptionsTableViewController: UITableViewController , UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
     var retreivedImages = ImageData.loadImagesFromUserDefaults()
+    var chosenIndexPath: NSIndexPath!
+    var downloadedImage: UIImage!
+    var urlForImage = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -52,7 +56,136 @@ class ImageOptionsTableViewController: UITableViewController {
         cell.imageV1.image = im
         return cell
     }
+    
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        chosenIndexPath = indexPath
 
+        
+        // create the alert
+        let alert = UIAlertController(title: "Notice", message: "Chose source of picture", preferredStyle: UIAlertControllerStyle.Alert)
+        
+        // add the actions (buttons)
+        alert.addAction(UIAlertAction(title: "Gallery", style: UIAlertActionStyle.Default, handler: {action in self.handlerForImagePicker(indexPath)}))
+        alert.addAction(UIAlertAction(title: "URL", style: UIAlertActionStyle.Default, handler: {action in self.handlerForUrlDownload(indexPath)}))
+        alert.addAction(UIAlertAction(title: "Camera", style: UIAlertActionStyle.Default, handler: {action in self.handlerForCamera(indexPath)}))
+        alert.addAction(UIAlertAction(title: "Cancell", style: UIAlertActionStyle.Cancel, handler: nil))
+        
+        // show the alert
+        self.presentViewController(alert, animated: true, completion: nil)
+    
+    }
+    
+    func handlerForImagePicker(indexPath :NSIndexPath){
+        print("ImagePicker")
+        
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        presentViewController(picker, animated: true, completion: nil)
+    }
+    
+    func handlerForUrlDownload(indexPath :NSIndexPath){
+         print("URL")
+        
+        if let checkedUrl = NSURL(string: "http://www.apple.com/euro/ios/ios8/a/generic/images/og.png") {
+            downloadImage(checkedUrl)
+        }
+        
+    }
+    
+    func handlerForCamera(indexPath :NSIndexPath){
+         print("Camera")
+        // the below section should work, but there is no camera in XCode emulator, and there is
+        // some hardware exception
+        
+        /*chosenIndexPath = indexPath
+        
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.sourceType = .Camera
+        picker.delegate = self
+        presentViewController(picker, animated: true, completion: nil)*/
+    }
+    
+    func imagePickerControllerDidCancel(picker: UIImagePickerController) {
+        dismissViewControllerAnimated(true, completion: nil)
+    }
+    
+    // implementing picker delegate
+    func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]) {
+        var newImage: UIImage
+        
+        if let possibleImage = info[UIImagePickerControllerEditedImage] as? UIImage {
+            newImage = possibleImage
+        } else if let possibleImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            newImage = possibleImage
+        } else {
+            return
+        }
+        
+        let imageName = NSUUID().UUIDString
+        let imagePath = getDocumentsDirectory().stringByAppendingPathComponent(imageName)
+        
+        if let pngData = UIImagePNGRepresentation(newImage) {
+            pngData.writeToFile(imagePath, atomically: true)
+            
+            // saving to preferences
+            retreivedImages![chosenIndexPath.row].name = imagePath
+            ImageData.saveImagesToUserDefaults(retreivedImages!)
+        }
+        
+        dismissViewControllerAnimated(true, completion: nil)
+        // refreshing tableview to show new picture
+        dispatch_async(dispatch_get_main_queue(), { () -> Void in
+            self.tableView.reloadData()
+        })
+    }
+    
+    
+    // get directory for saving pictures
+    func getDocumentsDirectory() -> NSString {
+        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
+        let documentsDirectory = paths[0]
+        return documentsDirectory
+    }
+    
+    
+    func downloadImage(url: NSURL){
+        print("Download Started")
+        print("lastPathComponent: " + (url.lastPathComponent ?? ""))
+        getDataFromUrl(url) { (data, response, error)  in
+            dispatch_async(dispatch_get_main_queue()) { () -> Void in
+                guard let data = data where error == nil else { return }
+                print(response?.suggestedFilename ?? "")
+                print("Download Finished")
+                self.downloadedImage = UIImage(data: data)
+                
+                let imageName = NSUUID().UUIDString
+                let imagePath = self.getDocumentsDirectory().stringByAppendingPathComponent(imageName)
+                if let pngData = UIImagePNGRepresentation(self.downloadedImage) {
+                    pngData.writeToFile(imagePath, atomically: true)
+                    
+                    // saving to preferences
+                    self.retreivedImages![self.chosenIndexPath.row].name = imagePath
+                    ImageData.saveImagesToUserDefaults(self.retreivedImages!)
+                    
+                    dispatch_async(dispatch_get_main_queue(), { () -> Void in
+                        self.tableView.reloadData()
+                    })
+                }
+                
+            }
+        }
+    }
+    
+    func getDataFromUrl(url:NSURL, completion: ((data: NSData?, response: NSURLResponse?, error: NSError? ) -> Void)) {
+        NSURLSession.sharedSession().dataTaskWithURL(url) { (data, response, error) in
+            completion(data: data, response: response, error: error)
+            }.resume()
+    }
+
+    
+    
 
     /*
     // Override to support conditional editing of the table view.
