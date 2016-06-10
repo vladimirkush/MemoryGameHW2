@@ -54,7 +54,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" scrollEnabled="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="AQV-PW-ciq">
-                                <rect key="frame" x="20" y="146" width="374" height="341"/>
+                                <rect key="frame" x="20" y="146" width="374" height="370"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="ijJ-lB-JMA">
                                     <size key="itemSize" width="70" height="70"/>

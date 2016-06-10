@@ -87,10 +87,26 @@ class ImageOptionsTableViewController: UITableViewController , UIImagePickerCont
     func handlerForUrlDownload(indexPath :NSIndexPath){
          print("URL")
         
-        if let checkedUrl = NSURL(string: "http://www.apple.com/euro/ios/ios8/a/generic/images/og.png") {
+        let alert = UIAlertController(title: "Alert", message: "Enter the URL for image:", preferredStyle: UIAlertControllerStyle.Alert)
+        
+        alert.addTextFieldWithConfigurationHandler({(textField: UITextField!) in
+            textField.placeholder = "url"
+            textField.secureTextEntry = false
+        })
+        
+        alert.addAction(UIAlertAction(title: "Go", style: UIAlertActionStyle.Default, handler: { action in
+            if let text = alert.textFields!.first! as? UITextField{
+                self.urlEnteredHandler(text.text!)
+            }
+        }))
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
+    func urlEnteredHandler(url: String){
+        
+        if let checkedUrl = NSURL(string: url) {
             downloadImage(checkedUrl)
         }
-        
     }
     
     func handlerForCamera(indexPath :NSIndexPath){

@@ -112,9 +112,11 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         for(var i=0;i<4;i++){
             for (var j=0;j<4;j++){
                 let  cell=collectionView.cellForItemAtIndexPath(NSIndexPath(forRow: i, inSection: j)) as! CollectionViewCell
-                cell.isFaceUp=false;
+                if cell.isFaceUp{
+                    cell.flip()
+                }
                 cell.hidden=false
-                cell.setImages(testImage!, back: backImage!)
+                cell.setImages(ImageForLetter(charMatrix[j][i]), back: backImage!)
             }
         }
     }
@@ -304,6 +306,8 @@ class ViewController: UIViewController, UICollectionViewDelegate, UICollectionVi
         score = 1000
         lblTimer.text = "00:00"
         
+        clickCount = 0
+        firstCell = [0,0]
        
         prepareCells()
         setCellsEnabled(collectionViewRef, enabled: true)
